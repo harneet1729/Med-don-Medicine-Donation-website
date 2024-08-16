@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Donor Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function loadFile(ref) {
+          var image1 = document.getElementById('idpic');
+          image1.src = URL.createObjectURL(ref.files[0]);
+          alert("image1");
+      };
+
+      function loadFile1(ref) {
+          var image = document.getElementById('ppic');
+          image.src = URL.createObjectURL(ref.files[0]);
+          alert("image");
+      };
+  </script>
+
+  <script>
+    $(document).ready(function(){
+
+      var activeuser = localStorage.getItem("activeuser");
+      $("#email").val(activeuser).prop("readonly",true)
+
+        $("#searchbtn").click(function(){
+          var email=$("#email").val();
+          
+          var url="/getProfileObject?email="+email;
+          $.getJSON(url,function(responseKuchJSONAryObject)
+          {
+            if(responseKuchJSONAryObject.length==0)
+            alert("Invalid Id");
+            else
+              {
+                alert(JSON.stringify(responseKuchJSONAryObject));
+              //now assign ids to all form controls
+              //id and table-col-name
+
+              $("#name").val(responseKuchJSONAryObject[0].name);
+              $("#mobile").val(responseKuchJSONAryObject[0].mobile);
+              $("#address").val(responseKuchJSONAryObject[0].address);
+              $("#city").val(responseKuchJSONAryObject[0].city);
+              $("#idtype").val(responseKuchJSONAryObject[0].prooftype);
+              $("#time").val(responseKuchJSONAryObject[0].timings);
+
+              $("#hdn1").val(responseKuchJSONAryObject[0].proofpic);
+              alert(hdn1.val);
+              $("#hdn2").val(responseKuchJSONAryObject[0].profilepic);
+              alert(hdn2.val);
+
+              $("#idpic").prop("src","idpic/"+responseKuchJSONAryObject[0].proofpic);
+              $("#ppic").prop("src","profilepic/"+responseKuchJSONAryObject[0].profilepic);
+
+              }
+
+
+          })
+        });
+
+    })
+
+
+  </script>
+
+</head>
+  <body>
+
+   <!-- navbar -->
+   <nav class="navbar bg-light">
+    <div class="container-fluid ">
+      <a href="index.html" class="navbar-brand ">Med-Don!</a>
+      <a class="navbar-brand  mb-0 h1 text-success" href="profile-donor.html">Profile-Donor</a>
+      <span class="navbar-brand">Welcome Donor</span>
+    </div>
+  </nav>
+  <div class="w-75 m-auto my-3">
+  <!-- form -->
+  <form class="row g-3 m-auto" enctype="multipart/form-data" method="post">
+
+    <input type="hidden" id="hdn1" name="hdn1">
+    <input type="hidden" id="hdn2" name="hdn2">
+    <div class="col-6">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email">
+    </div>
+    <div class="col-3">
+      <label for="searchbtn" class="form-label"> &nbsp;</label>
+      <button type="button" name="searchbtn" class="btn btn-success form-control" id="searchbtn">Search</button>
+    </div>
+    <div class="col-6">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Your Name here">
+    </div>
+    <div class="col-6">
+      <label for="mobile" class="form-label">Mobile Number</label>
+      <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Your Phone Number">
+    </div>
+    <div class="col-6">
+      <label for="address" class="form-label">Address</label>
+      <input type="text" class="form-control" id="address" name="address" placeholder="Your Address">
+    </div>
+    <div class="col-6">
+        <label for="city" class="form-label">City</label>
+        <input type="text" class="form-control" id="city" name="city" placeholder="Your City">
+      </div>
+    
+    <div class="col-6">
+      <label for="idtype" class="form-label">ID proof type</label>
+      <select id="idtype" class="form-select" name="idtype">
+        <option selected>Choose...</option>
+        <option value="aadhar">Aadhar Card</option>
+        <option value="voting">Voting Card</option>
+        <option value="passport">Passport</option>
+        <option value="driving">Driving License</option>
+      </select>
+    </div>
+
+    <div class="col-6">
+        <label for="time" class="form-label">Contact time</label>
+        <input type="text" class="form-control" id="time" name="time" placeholder="your Available Timings">
+      </div>
+    
+      <div class="col-6">
+        <label for="idproof" class="form-label">Id Proof</label>
+        <input type="file" class="form-control btn btn-success" id="idproof" name="idproof" accept=".jpg, .jpeg, .png" onchange="loadFile(this);">
+    </div>
+
+    <div class="col-6">
+        <label for="profilepic" class="form-label">Profile Pic</label>
+        <input type="file" class="form-control btn btn-success" id="profilepic" name="profilepic" accept=".jpg, .jpeg, .png" onchange="loadFile1(this);">
+    </div>
+
+
+    <div class="col-6">
+        <img id="idpic" src="" width="100" height="100" alt="">
+      
+    </div>
+
+    <div class="col-6">
+        <img id="ppic" src="" width="100" height="100" alt="">
+    </div>
+
+    
+    <div class="col-6">
+      <button type="submit" class="btn btn-success form-control" formaction="/profile-process">  save  </button>
+    </div>
+
+    <div class="col-6">
+        <button type="submit" class="btn btn-success form-control" formaction="/profile-update"> update </button>
+      </div>
+      
+
+  </form>
+  </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>

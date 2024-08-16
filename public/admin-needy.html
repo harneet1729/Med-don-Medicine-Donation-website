@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Needy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <script>
+        var moduleKuch=angular.module("myModule",[]);
+        moduleKuch.controller("myController",function($scope,$http)
+        {
+
+            $scope.jsonAry=[];
+
+            $scope.fetchneedy=function()
+            {
+                $http.get("/fetchneedy").then(fxSuccess,function(response){
+                        alert(JSON.stringify(response.data));
+                   });
+                   function fxSuccess(response)
+                   {
+                  //  alert(JSON.stringify(response.data));
+                    $scope.jsonAry=response.data;
+                   }
+            }
+
+            $scope.dodel=function(emailid,index)
+            {
+                   alert(emailid+"  "+index);
+                   if(confirm("R U Sure?")==false)
+                        return;
+
+                   var url="/nprofile-del-angualr?emailidX="+emailid;
+                   $http.get(url).then(fxAnmol,function(response){
+                        alert(response.data);
+                   });
+                   function fxAnmol(response)
+                   {
+                        //alert(response.data);
+                        $scope.fetchneedy();
+                   }
+            }
+
+        })
+
+</script>
+  
+  </head>
+  <body  ng-app="myModule" ng-controller="myController" ng-init="fetchneedy()">
+
+
+<!-- navbar -->
+    <nav class="navbar bg-light">
+        <div class="container-fluid ">
+          <a href="index.html" class="navbar-brand ">Med-Don!</a>
+          <a class="navbar-brand  mb-0 h1 text-success" href="admin-needy.html">All Needy</a>
+          <span class="navbar-brand">Welcome Admin</span>
+        </div>
+      </nav>
+
+      <!-- TABLE -->
+
+      <div class="w-75 m-auto my-3">
+
+      <table class="table table-success table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Sr. no.</th>
+            <th scope="col">Email</th>
+            <th scope="col">Name</th>
+            <th scope="col">Mobile</th>
+            <th scope="col">Address</th>
+            <th scope="col">City</th>
+            <th scope="col">Proof Type</th>
+            <th scope="col">Delete Record</th>
+
+          </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="obj in jsonAry">
+                <td>{{$index+1}}</td>
+                <td>{{obj.emailid}}</td>
+                <td>{{obj.name}}</td>
+                <td>{{obj.mobile}}</td>
+                <td>{{obj.address}}</td>
+                <td>{{obj.city}}</td>
+                <td>{{obj.prooftype}}</td>
+            
+                <td>
+                    <input type="button" class="btn btn-success" value="Delete" ng-click=dodel(obj.emailid,$index);>
+                </td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>

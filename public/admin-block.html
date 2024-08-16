@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Block</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script>
+        var moduleKuch=angular.module("myModule",[]);
+        moduleKuch.controller("myController",function($scope,$http)
+        {
+
+            $scope.jsonAry=[];
+
+            $scope.fetchAllRecords=function()
+            {
+                $http.get("/fetchAllRecords").then(fxSuccess,function(response){
+                        alert(JSON.stringify(response.data));
+                   });
+                   function fxSuccess(response)
+                   {
+                    //alert(JSON.stringify(response.data));
+                    $scope.jsonAry=response.data;
+                   }
+            }
+
+
+            $scope.doBlock=function(email,index)
+            {
+                //    alert(email+"  "+index);
+                //    if(confirm("R U Sure?")==false)
+                //         return;
+
+                   var url="/profile-block-angualr?emailidX="+email;
+                   $http.get(url).then(fxAnmol,function(response){
+                        alert(response.data);
+                   });
+                   function fxAnmol(response)
+                   {
+                        //alert(response.data);
+                        $scope.fetchAllRecords();
+                   }
+            }
+
+            $scope.doUn=function(email,index)
+            {
+                //    alert(email+"  "+index);
+                //    if(confirm("R U Sure?")==false)
+                //         return;
+
+                   var url="/profile-unblock-angualr?emailidX="+email;
+                   $http.get(url).then(fxAnmol,function(response){
+                        alert(response.data);
+                   });
+                   function fxAnmol(response)
+                   {
+                        //alert(response.data);
+                        $scope.fetchAllRecords();
+                   }
+            }
+
+
+
+        })
+    </script>
+
+
+
+  </head>
+  <body ng-app="myModule" ng-controller="myController" ng-init=>
+
+<!-- navbar -->
+    <nav class="navbar bg-light">
+        <div class="container-fluid ">
+          <a href="index.html" class="navbar-brand ">Med-Don!</a>
+          <a class="navbar-brand  mb-0 h1 text-success" href="admin-block.html">Block Users</a>
+          <span class="navbar-brand">Welcome Admin</span>
+        </div>
+      </nav>
+
+      <div class="d-flex my-3 justify-content-center">
+        <button type="button" class="btn btn-success" ng-click="fetchAllRecords();">Fetch All Users</button>
+      </div>
+
+      <div class="w-75 m-auto">
+
+      <table class="table table-success table-striped table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Sr. no.</th>
+            <th scope="col">Email</th>
+            <th scope="col">User Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Block</th>
+            <th scope="col">Unblock</th>
+
+
+          </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="obj in jsonAry">
+                <td>{{$index+1}}</td>
+                <td>{{obj.email}}</td>
+                <td>{{obj.utype}}</td>
+                <td>{{obj.status}}</td>
+            
+                <td>
+                    <input type="button" class="btn btn-success" value="Block" ng-click=doBlock(obj.email,$index);>
+                </td>
+
+                <td>
+                    <input type="button" class="btn btn-success" value="Unblock" ng-click=doUn(obj.email,$index);>
+                </td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>
